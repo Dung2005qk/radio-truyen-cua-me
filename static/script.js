@@ -35,7 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'truyenhdt.com',
         'bnsach.com',
         'truyenwikidich.net',
-        'truyenyy.mobi'
+        'truyenyy.mobi',
+        'gocnhocuasakiblog.wordpress.com'
         // Thêm bất kỳ domain nào khác bạn có
     ];
     const SUPPORTED_SITES_FRIENDLY_NAMES = ["truyenfull.vision, truyenyy.mobi"];

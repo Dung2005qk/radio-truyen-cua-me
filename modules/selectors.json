@@ -57,5 +57,22 @@
       "script", 
       "style"
     ]
+  },
+  "gocnhocuasakiblog.wordpress.com": {
+    "title": "h1.entry-title",
+    "content": "div.entry-content",
+    "next_url": "link[rel='next']",
+    "prev_url": "link[rel='prev']",
+    "junk_selectors": [
+      "header.entry-header",
+      ".entry-footer",
+      "div#comments",
+      "div#secondary",
+      ".sharedaddy", 
+      "div[id^='like-post-wrapper']",
+      "script", 
+      "style",
+      "iframe"
+    ]
   }
 }
