@@ -1,0 +1,147 @@
+{
+  "dtruyen.vn": {
+    "title": "a.chapter-title",
+    "content": "div#chapter-content",
+    "next_url": "a#next_chap",
+    "prev_url": "a#prev_chap",
+    "junk_selectors": [
+      "script",
+      "style",
+      "iframe",
+      "ins",
+      ".text-center.font-italic",
+      "a.btn"
+    ]
+  },
+  "webtruyen.com": {
+    "title": "h2.chapter-title",
+    "content": "div#chapter-content",
+    "next_url": "a#next_chap",
+    "prev_url": "a#prev_chap",
+    "junk_selectors": [
+      "script",
+      "style",
+      "iframe",
+      "ins",
+      "div.chapter-info",
+      "div[align='center']"
+    ]
+  },
+  "thichdoctruyenc.com": {
+    "title": "",
+    "content": "",
+    "next_url": "",
+    "prev_url": "",
+    "junk_selectors": [],
+    "reason": "Không thể hỗ trợ: Nội dung chính được tải bằng JavaScript, hệ thống không thể trích xuất."
+  },
+  "truyenconvert.net": {
+    "title": "h2.title",
+    "content": "div#content",
+    "next_url": "a.page-next",
+    "prev_url": "a.page-prev",
+    "junk_selectors": [
+      "script",
+      "style",
+      "iframe",
+      "ins",
+      "div.link-share",
+      "div.ps-block"
+    ]
+  },
+  "truyenfull.vision": {
+    "title": "a.chapter-title",
+    "content": "div.chapter-c",
+    "next_url": "a#next_chap",
+    "prev_url": "a#prev_chap",
+    "junk_selectors": [
+      "script",
+      "style",
+      "iframe",
+      "ins",
+      "div[class*='ads']",
+      "div[id*='ads']",
+      "#chapter-c > div[style]"
+    ]
+  },
+  "truyenhdt.com": {
+    "title": "h1.title",
+    "content": "div#chapter-content",
+    "next_url": "a.btn-next",
+    "prev_url": "a.btn-prev",
+    "junk_selectors": [
+      "script",
+      "style",
+      "iframe",
+      "ins",
+      "div.nh-read-a",
+      "div.nh-read-b",
+      "div[id*='ezoic']"
+    ]
+  },
+  "metruyencv.com": {
+    "title": "",
+    "content": "",
+    "next_url": "",
+    "prev_url": "",
+    "junk_selectors": [],
+    "reason": "Không thể hỗ trợ: Trang web yêu cầu đăng nhập để xem nội dung đầy đủ."
+  },
+  "tangthuvien.net": {
+    "title": "h2.truyen-title",
+    "content": "div.box-chap",
+    "next_url": "a#btn-next-chap",
+    "prev_url": "a#btn-prev-chap",
+    "junk_selectors": [
+      "script",
+      "style",
+      "iframe",
+      "ins",
+      "div.text-center",
+      "button.btn-like"
+    ]
+  },
+  "bnsach.com": {
+    "title": "h2#chuong-title",
+    "content": "div#noi-dung",
+    "next_url": "a#next-chuong",
+    "prev_url": "a#prev-chuong",
+    "junk_selectors": [
+      "script",
+      "style",
+      "iframe",
+      "ins",
+      "div.text-center.text-muted",
+      "div#tac-gia"
+    ]
+  },
+  "truyenwikidich.net": {
+    "title": "h2#bookContent_TenChuong",
+    "content": "div#bookContentBody",
+    "next_url": "a#btnNextChuong",
+    "prev_url": "a#btnPrevChuong",
+    "junk_selectors": [
+      "script",
+      "style",
+      "iframe",
+      "ins",
+      "div.info-bottom-comment",
+      "div.book-notice"
+    ]
+  },
+  "truyenyy.mobi": {
+    "title": "h1.name-chapter",
+    "content": "div#content-story",
+    "next_url": "a.we-buttons-parent-chapter-next",
+    "prev_url": "a.we-buttons-parent-chapter-previous",
+    "junk_selectors": [
+      "script",
+      "style",
+      "iframe",
+      "ins",
+      "div.chapter-end-info",
+      "div.ads-responsive",
+      "a[href*='truyenyy.mobi/donate/']"
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Truyện Của Mẹ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <hgroup>
+                <h1>📻 Radio Truyện Của Mẹ</h1>
+                <p class="subtitle">Dán link chương truyện vào đây để nghe mẹ nhé!</p>
+            </hgroup>
+        </header>
+
+        <main>
+            <form id="story-form" action="javascript:void(0);" novalidate>
+                <div class="input-group">
+                    <label for="story-url-input" class="visually-hidden">URL của chương truyện</label>
+                    <input type="url" id="story-url-input" placeholder="Mẹ dán link vào đây..." required>
+                    <button type="submit" id="play-button">Nghe</button>
+                </div>
+            </form>
+
+            <div id="status-display" class="status-display" aria-live="polite">Sẵn sàng đọc truyện cho Mẹ nghe</div>
+
+            <div id="loading-spinner" class="spinner-container hidden">
+                <div class="spinner"></div>
+            </div>
+
+            <div class="player-container">
+                <audio controls id="audio-player">
+                    Trình duyệt của mẹ không hỗ trợ phát âm thanh. Vui lòng cập nhật trình duyệt.
+                </audio>
+            </div>
+
+            <div id="navigation-controls" class="navigation-controls hidden">
+                <button type="button" id="prev-chapter-button">⏮️ Chương Trước</button>
+                <button type="button" id="next-chapter-button">Chương Sau ⏭️</button>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Một món quà nhỏ từ con ❤️</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
