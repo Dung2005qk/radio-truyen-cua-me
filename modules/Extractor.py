@@ -2,19 +2,26 @@ import logging
 import json
 import re
 import os
-import requests
+import cloudscraper
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
+import requests
 
 # --- Module Level Configuration & Initialization ---
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(module)s - %(message)s')
 
-SESSION = requests.Session()
+SESSION = cloudscraper.create_scraper(
+    browser={
+        'browser': 'chrome',
+        'platform': 'windows',
+        'mobile': False
+    }
+)
 SESSION.headers.update({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
 })
-REQUEST_TIMEOUT = 15  # seconds
+REQUEST_TIMEOUT = 20  # seconds
 
 # Refined regex patterns for post-processing to be more specific and avoid false positives
 TEXT_CLEANUP_PATTERNS = [
@@ -26,7 +33,7 @@ TEXT_CLEANUP_PATTERNS = [
 ]
 
 SITE_CONFIG = {}
-REQUIRED_CONFIG_KEYS = {'title_selector', 'content_selector', 'next_chapter_selector', 'prev_chapter_selector'}
+REQUIRED_CONFIG_KEYS = {'title', 'content', 'next_url', 'prev_url'}
 
 def load_configs():
     """
@@ -97,8 +104,10 @@ def fetch_and_parse(url: str) -> dict | None:
         response = SESSION.get(url, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
         soup = BeautifulSoup(response.content, 'html.parser')
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Network error fetching {url}: {e}")
+        #with open("debug_output.html", "w", encoding="utf-8") as f:
+        #   f.write(soup.prettify())
+    except (requests.exceptions.RequestException, cloudscraper.exceptions.CloudflareException) as e:
+        logging.error(f"Network or Cloudflare error fetching {url}: {e}")
         return None
 
     try:
@@ -114,20 +123,20 @@ def fetch_and_parse(url: str) -> dict | None:
             return urljoin(base_url, href.strip())
 
         # STEP 1: EXTRACT all required elements before any modification
-        title_element = soup.select_one(config['title_selector'])
-        content_element = soup.select_one(config['content_selector'])
+        title_element = soup.select_one(config['title'])
+        content_element = soup.select_one(config['content'])
 
         if not content_element:
-            logging.error(f"Critical failure: Content selector '{config['content_selector']}' not found for {url}.")
+            logging.error(f"Critical failure: Content selector '{config['content']}' not found for {url}.")
             return None
 
         title = title_element.get_text(strip=True) if title_element else "Không rõ tiêu đề"
-        next_url = get_absolute_url(config['next_chapter_selector'])
-        prev_url = get_absolute_url(config['prev_chapter_selector'])
+        next_url = get_absolute_url(config['next_url'])
+        prev_url = get_absolute_url(config['prev_url'])
 
         # STEP 2: CLEAN UP unwanted HTML tags *within* the content block
-        if config.get('remove_elements'):
-            for selector in config['remove_elements']:
+        if config.get('junk_selectors'):
+            for selector in config['junk_selectors']:
                 for element in content_element.select(selector):
                     element.decompose()
 

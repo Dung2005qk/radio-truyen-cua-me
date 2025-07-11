@@ -7,6 +7,8 @@ import typing
 import time
 from threading import Thread
 import edge_tts
+import platform 
+IS_WINDOWS = platform.system() == "Windows"
 
 # --- Module Level Configuration ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(module)s - %(message)s')
@@ -115,27 +117,50 @@ class TTSEngine:
 
         async def _produce_audio():
             """The async producer function that runs in a separate thread."""
-            try:
-                for text_chunk in self._chunk_text(text):
-                    if not text_chunk.strip(): continue
-                    
-                    communicate = edge_tts.Communicate(text_chunk, self.voice, rate=final_rate, volume=final_volume)
-                    stream_iterator = asyncio.wait_for(communicate.stream(), timeout=PRODUCER_STREAM_TIMEOUT)
 
-                    async for chunk in stream_iterator:
-                        if chunk["type"] == "audio":
-                            audio_queue.put(chunk["data"])
+            # --- HÀM TRỢ GIÚP MỚI ---
+            # Hàm này nhận một đoạn text, stream nó và đưa vào queue.
+            # Đây là một 'coroutine' hoàn chỉnh.
+            async def stream_and_queue_chunk(text_chunk_to_stream):
+                communicate = edge_tts.Communicate(text_chunk_to_stream, self.voice, rate=final_rate, volume=final_volume)
+                async for chunk in communicate.stream():
+                    if chunk["type"] == "audio":
+                        audio_queue.put(chunk["data"])
+
+            # --- LOGIC CHÍNH ĐÃ ĐƯỢC SỬA LẠI ---
+            try:
+                # Lặp qua từng đoạn văn bản lớn
+                for text_chunk in self._chunk_text(text):
+                    if not text_chunk.strip():
+                        continue
+                    
+                    # Với mỗi đoạn, chúng ta gọi hàm trợ giúp ở trên VÀ
+                    # áp dụng timeout cho TOÀN BỘ quá trình thực thi của nó.
+                    await asyncio.wait_for(
+                        stream_and_queue_chunk(text_chunk),
+                        timeout=PRODUCER_STREAM_TIMEOUT
+                    )
+
             except asyncio.TimeoutError:
-                logging.error("Edge-TTS stream generation timed out.")
-                _safe_put(TTSEngineError("Quá trình tạo giọng đọc mất quá nhiều thời gian."))
+                logging.error(f"TTS stream generation for a chunk timed out after {PRODUCER_STREAM_TIMEOUT}s.")
+                _safe_put(TTSEngineError("Quá trình tạo giọng đọc cho một đoạn bị quá giờ."))
             except Exception as e:
-                logging.error(f"Edge-TTS failed: {e}", exc_info=False)
-                _safe_put(TTSEngineError(f"Không thể tạo giọng đọc: {e}"))
+                logging.error(f"An exception occurred in the TTS producer thread: {e}", exc_info=True)
+                _safe_put(TTSEngineError(f"Không thể tạo giọng đọc do lỗi: {type(e).__name__}"))
             finally:
-                _safe_put(None) # Signal the end of the stream.
+                _safe_put(None)
 
         def _run_producer_thread():
             """Target for the producer thread to safely run the asyncio event loop."""
+            # --- BLOCK CODE SỬA LỖI CHO WINDOWS ---
+            if IS_WINDOWS:
+                try:
+                    import winloop
+                    asyncio.set_event_loop_policy(winloop.EventLoopPolicy())
+                except ImportError:
+                    logging.warning("winloop not installed, TTS might fail on Windows.")
+            # --- KẾT THÚC BLOCK SỬA LỖI ---
+            
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
@@ -194,8 +219,8 @@ def create_tts_engine() -> typing.Optional[TTSEngine]:
 # --- Singleton Instance ---
 # A single, shared instance is created. If it fails, `default_engine` will be None,
 # and the application can check for this to disable TTS functionality gracefully.
-try:
-    default_engine = create_tts_engine()
-except Exception:
-    default_engine = None
-    logging.critical("TTS Engine failed to initialize during module import. TTS functionality will be disabled.")
+#try:
+#    default_engine = create_tts_engine()
+#except Exception:
+#    default_engine = None
+#    logging.critical("TTS Engine failed to initialize during module import. TTS functionality will be disabled.")

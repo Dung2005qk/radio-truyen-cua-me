@@ -18,10 +18,18 @@ from modules import (
     TTSEngineError,
 )
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s') 
 # --- Initialization & Configuration ---
 load_dotenv()
 app = Flask(__name__)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+logging.info("="*50)
+logging.info("--- DEBUGGING ENVIRONMENT VARIABLES AT STARTUP ---")
+actual_voice = os.getenv('TTS_VOICE')
+actual_rate = os.getenv('TTS_RATE')
+logging.info(f"Value for TTS_VOICE: {actual_voice}")
+logging.info(f"Value for TTS_RATE: {actual_rate}")
+logging.info("="*50)
+# ------------------------------------
 
 # --- Resilient Application Startup ---
 # Create TTS engine instance via factory function

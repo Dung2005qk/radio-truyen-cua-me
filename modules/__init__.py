@@ -8,7 +8,7 @@ chi tiết về cấu trúc file bên trong.
 """
 
 # Các import được sắp xếp theo thứ tự alphabet của module
-from Cache_manager import (
+from .Cache_manager import (
     check_cache_exists,
     get_path_from_key,
     run_cleanup_routine,
@@ -16,8 +16,8 @@ from Cache_manager import (
     stream_from_path as stream_from_cache,
     touch_cache_file,
 )
-from Extractor import fetch_and_parse
-from Tts import TTSEngine, create_tts_engine
+from .Extractor import fetch_and_parse
+from .Tts import TTSEngine, TTSEngineError, create_tts_engine
 
 # Định nghĩa __all__ là một best practice trong Python.
 # Nó khai báo rõ những tên nào sẽ được import khi có lệnh `from modules import *`
@@ -25,6 +25,7 @@ from Tts import TTSEngine, create_tts_engine
 # Danh sách được sắp xếp theo thứ tự alphabet.
 __all__ = [
     "TTSEngine",
+    "TTSEngineError",
     "check_cache_exists",
     "create_tts_engine",
     "fetch_and_parse",

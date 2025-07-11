@@ -1,13 +1,25 @@
 "use strict";
-
+console.log("script.js has been loaded and is running!");
 document.addEventListener('DOMContentLoaded', () => {
-
+    console.log("DOMContentLoaded event fired!");
     // =================================================================
     // 1. Constants and DOM Elements
     // =================================================================
 
+    console.log("Searching for DOM elements...");
     const storyUrlInput = document.getElementById('story-url-input');
     const playButton = document.getElementById('play-button');
+    console.log("Play button element:", playButton);
+    console.log("URL input element:", storyUrlInput);
+    if (playButton) {
+         console.log("Play button found! Attaching event listener...");
+         playButton.addEventListener('click', () => {
+             console.log("Play button CLICKED!"); // Log khi nhấn nút
+             // ... code xử lý sự kiện click của bạn
+         });
+    } else {
+         console.error("CRITICAL: Play button not found in the DOM!");
+    }
     const audioPlayer = document.getElementById('audio-player');
     const statusDisplay = document.getElementById('status-display');
     const navControls = document.getElementById('navigation-controls');
@@ -15,9 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextChapterButton = document.getElementById('next-chapter-button');
     const mainContainer = document.querySelector('.container');
     const loadingSpinner = document.getElementById('loading-spinner');
-
-    const SUPPORTED_DOMAINS = ['truyenfull.vn', 'sstruyen.vn', 'metruyencv.com', 'tangthuvien.vn'];
-    const SUPPORTED_SITES_FRIENDLY_NAMES = ["Truyenfull.vn", "Sstruyen.vn", "Metruyencv.com", "Tangthuvien.vn"];
+    const SUPPORTED_DOMAINS = [
+        'truyenfull.vn', 
+        'tangthuvien.net',
+        'truyenconvert.net',
+        'truyenfull.vision',
+        'truyenhdt.com',
+        'bnsach.com',
+        'truyenwikidich.net',
+        'truyenyy.mobi'
+        // Thêm bất kỳ domain nào khác bạn có
+    ];
+    const SUPPORTED_SITES_FRIENDLY_NAMES = ["truyenfull.vision, truyenyy.mobi"];
     const REQUEST_TIMEOUT = 30000; // 30 seconds
 
     const metadataCache = new Map();
