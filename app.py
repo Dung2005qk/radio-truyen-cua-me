@@ -2,7 +2,7 @@ import os
 import hashlib
 import logging
 from pathlib import Path
-
+import threading
 from flask import Flask, request, Response, stream_with_context, jsonify, render_template
 from dotenv import load_dotenv
 
@@ -14,6 +14,7 @@ from modules import (
     stream_from_cache,
     touch_cache_file,
     fetch_and_parse,
+    run_cleanup_routine,
     create_tts_engine,
     TTSEngineError,
 )
@@ -77,6 +78,28 @@ def serve_frontend():
     """Serves the main frontend application."""
     return render_template('index.html')
 
+
+@app.route('/cron/cleanup', methods=['POST'])
+def trigger_cleanup():
+    # Lấy secret từ biến môi trường
+    cron_secret = os.getenv('CRON_SECRET')
+    
+    # Kiểm tra "chìa khóa"
+    if not cron_secret or request.headers.get('Authorization') != f'Bearer {cron_secret}':
+        app.logger.warning("Unauthorized access attempt to cleanup endpoint.")
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    # Chạy dọn dẹp trong một luồng nền để không làm cron-job.org phải chờ
+    def run_cleanup_in_background():
+        with app.app_context():
+            app.logger.info("Cron job triggered: Starting background cleanup...")
+            run_cleanup_routine()
+
+    cleanup_thread = threading.Thread(target=run_cleanup_in_background, daemon=True)
+    cleanup_thread.start()
+    
+    # Trả về phản hồi ngay lập tức
+    return jsonify({'message': 'Cleanup routine triggered successfully.'}), 202
 
 @app.route('/api/metadata')
 def get_metadata():
