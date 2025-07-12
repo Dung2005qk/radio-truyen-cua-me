@@ -1,0 +1,36 @@
+# 🐍 Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+
+# 🧪 Test Cache
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# 📁 Virtual Environments
+.env
+.venv/
+env/
+venv/
+
+# ⚙️ IDE / Editor
+.vscode/
+.idea/
+
+# 💻 Hệ điều hành
+.DS_Store
+Thumbs.db
+
+# 📄 Log và tạm
+*.log
+*.tmp
+
+# 🔒 File cấu hình bí mật
+.env
